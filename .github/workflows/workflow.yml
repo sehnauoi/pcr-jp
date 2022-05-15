@@ -17,6 +17,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          
+      - name: Expose Runner Virtual Environment Image Version
+        run: echo "ImageVersion=$ImageVersion" >> $GITHUB_ENV
 
       - name: cloning
         run: |
