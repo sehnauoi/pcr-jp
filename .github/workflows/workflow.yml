@@ -1,0 +1,50 @@
+name: Synchronize
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0/15 * * * *'
+
+jobs:
+  sync:
+    name: "Synchronize"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonign
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Clone supercharge docs repository
+        uses: actions/checkout@v2
+        with:
+          repository: supercharge/docs
+          path: resources/docs/2.x
+          ref: 2.x
+
+      - name: Check if we have new version
+        id: new_version
+        run: |
+          DIFF="$(git diff -p -1 version)"
+          if [[ "$DIFF" = "" ]]; then
+            echo "There is no new version!"
+            exit 0
+          fi
+          echo "::set-output name=exists::true"
+
+      - name: Commit, create PR, and merge
+        if: steps.new_version.outputs.exists == 'true'
+        run: |
+          export GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          VERSION="$(jq .truth_version version)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "patch/$VERSION"
+          git commit -m "$VERSION"
+          git push -u origin "patch/$VERSION"
+          gh pr create --title "Update $VERSION" --body "Created automatically w/ github actions"
+          gh pr merge --merge -d
