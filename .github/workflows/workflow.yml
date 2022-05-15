@@ -18,9 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Clone redive_jp_db_diff
-        run: git clone https://github.com/HerDataSam/redive_jp_db_diff
-
+      - name: Clone redive_jp
+        uses: actions/checkout@v2
+        with:
+          repository: HerDataSam/redive_jp_db_diff
+          path: resources/docs/2.x
+          ref: 2.x
 
       - name: Commit, create PR, and merge
         if: steps.new_version.outputs.exists == 'true'
