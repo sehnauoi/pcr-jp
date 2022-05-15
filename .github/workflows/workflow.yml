@@ -19,7 +19,6 @@ jobs:
           fetch-depth: 0
 
       - name: Clone redive_jp_db_diff
-        uses: actions/checkout@v2
         run: git clone https://github.com/HerDataSam/redive_jp_db_diff
 
 
