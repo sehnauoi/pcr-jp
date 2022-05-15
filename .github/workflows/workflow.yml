@@ -18,22 +18,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Clone supercharge docs repository
+      - name: Clone redive_jp_db_diff
         uses: actions/checkout@v2
         with:
-          repository: supercharge/docs
+          repository: HerDataSam/redive_jp_db_diff
           path: resources/docs/2.x
           ref: 2.x
-
-      - name: Check if we have new version
-        id: new_version
-        run: |
-          DIFF="$(git diff -p -1 version)"
-          if [[ "$DIFF" = "" ]]; then
-            echo "There is no new version!"
-            exit 0
-          fi
-          echo "::set-output name=exists::true"
 
       - name: Commit, create PR, and merge
         if: steps.new_version.outputs.exists == 'true'
