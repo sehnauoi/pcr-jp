@@ -14,7 +14,7 @@ on:
 jobs:
   # needs access to {{ secrets.DEPLOY_ACCESS_TOKEN }} with at least public_repo scope
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -68,7 +68,7 @@ jobs:
         run: |
           git config --global user.name "sehnauoi"
           git config --global user.email "sehnauoi@users.noreply.github.com"
-          git add ./*csv
+          git add ./*.csv
           git add ./version.json
           git commit -m "[Bot] Database Updates - ${{ steps.download_database.outputs.title }}" -m '
           ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
