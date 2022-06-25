@@ -23,7 +23,7 @@ jobs:
         name: Download a master.db from expugn
         with:
           url: '["https://raw.githubusercontent.com/Expugn/priconne-database/master/master_jp.db"]'
-          target: .
+          target: ./
 
       - name: Generate .csv dump
         run: |
@@ -33,8 +33,8 @@ jobs:
         run: |
           export GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
           VERSION="$(jq .truth_version version)"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "sehnauoi"
+          git config user.email "sehnauoi@users.noreply.github.com"
 
           git add *
           git commit -m "Update"
