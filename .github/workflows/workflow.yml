@@ -19,7 +19,6 @@ jobs:
           fetch-depth: 0
           
       - uses: Angelk90/actions-download-file@master
-        if: steps.new_version.outputs.exists == 'true'
         id: downloadfile
         name: Download a master.db from expugn
         with:
@@ -27,12 +26,10 @@ jobs:
           target: .
 
       - name: Generate .csv dump
-        if: steps.new_version.outputs.exists == 'true'
         run: |
           . .github/scripts/dump.sh master_jp.db
 
       - name: Commit, create PR, and merge
-        if: steps.new_version.outputs.exists == 'true'
         run: |
           export GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
           VERSION="$(jq .truth_version version)"
