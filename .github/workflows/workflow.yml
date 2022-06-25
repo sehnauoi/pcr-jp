@@ -29,15 +29,15 @@ jobs:
         run: |
           . .github/scripts/dump.sh master_jp.db
 
+      - name: Check files
+        run: ls
+
       - name: Commit, create PR, and merge
         run: |
           export GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          VERSION="$(jq .truth_version version)"
           git config user.name "sehnauoi"
           git config user.email "sehnauoi@users.noreply.github.com"
 
           git add *
           git commit -m "Update"
-          git push -u origin "patch/$VERSION"
-          gh pr create --title "Update $VERSION" --body "Created automatically w/ github actions"
-          gh pr merge --merge -d
+          git push
