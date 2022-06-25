@@ -18,42 +18,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Expose Runner Virtual Environment Image Version
-        run: echo "ImageVersion=$ImageVersion" >> $GITHUB_ENV
-
-      - name: Cache fetcher
-        id: cache-primes
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/pip
-            priconne-en_db-fetch
-          key: ${{ runner.os }}-${{ env.ImageVersion }}-fetcher
-
-      - name: Checkout fetcher
-        if: steps.cache-primes.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
-        with:
-          repository: Expugn/priconne-en_db-fetch
-          ref: 90e0ffdedc845f7dd7b0d4eced9202ab0ef903fe
-          path: priconne-en_db-fetch
-
-      - name: Install fetcher deps
-        if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: |
-          cd priconne-en_db-fetch
-          pip install lz4
-          npm ci
-          ln -s .. out
-          cd ..
-
-      - name: Run fetcher
-        run: |
-          pip install lz4
-          cd priconne-en_db-fetch
-          node app.js
-          cd ..
-
       - name: Check if we have new version
         id: new_version
         run: |
@@ -63,11 +27,19 @@ jobs:
             exit 0
           fi
           echo "::set-output name=exists::true"
+          
+      - uses: Angelk90/actions-download-file@master
+        if: steps.new_version.outputs.exists == 'true'
+        id: downloadfile
+        name: Download a file
+        with:
+          url: '["https://raw.githubusercontent.com/Expugn/priconne-database/master/master_jp.db"]'
+          target: public/images
 
       - name: Generate .csv dump
         if: steps.new_version.outputs.exists == 'true'
         run: |
-          . .github/scripts/dump.sh master.db
+          . .github/scripts/dump.sh master_jp.db
 
       - name: Commit, create PR, and merge
         if: steps.new_version.outputs.exists == 'true'
