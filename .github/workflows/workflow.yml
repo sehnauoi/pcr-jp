@@ -19,11 +19,23 @@ jobs:
           fetch-depth: 0
           
       - uses: Angelk90/actions-download-file@master
-        id: downloadfile
+        id: download1
         name: Download a master.db from expugn
         with:
           url: '["https://raw.githubusercontent.com/Expugn/priconne-database/master/master_jp.db"]'
           target: ./
+          
+      - uses: Angelk90/actions-download-file@master
+        id: download2
+        name: Download a file
+        with:
+          url: '["https://raw.githubusercontent.com/sehnauoi/c/main/a.py", "https://raw.githubusercontent.com/Expugn/priconne-quest-helper/master/data/character_data.json"]'
+          target: ./
+
+      - name: Run Python
+        run: |
+          pip install pandas
+          python a.py
 
       - name: Generate .csv dump
         run: |
@@ -38,6 +50,6 @@ jobs:
           git config user.name "sehnauoi"
           git config user.email "sehnauoi@users.noreply.github.com"
 
-          git add *
+          git add *.csv
           git commit -m "Update"
           git push
