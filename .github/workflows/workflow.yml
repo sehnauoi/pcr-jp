@@ -18,35 +18,13 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Expose Runner Virtual Environment Image Version
-        run: echo "ImageVersion=$ImageVersion" >> $GITHUB_ENV
-
-      - name: Check if we have new version
-        id: new_version
-        run: |
-          DIFF="$(git diff -p -1 version)"
-          if [[ "$DIFF" = "" ]]; then
-            echo "There is no new version!"
-            exit 0
-          fi
-          echo "::set-output name=exists::true"
-          
-      - name: Cache fetcher
-        id: cache-primes
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/pip
-            pcr-jp
-          key: ${{ runner.os }}-${{ env.ImageVersion }}-fetcher
-          
       - uses: Angelk90/actions-download-file@master
         if: steps.new_version.outputs.exists == 'true'
         id: downloadfile
-        name: Download a file
+        name: Download a master.db from expugn
         with:
           url: '["https://raw.githubusercontent.com/Expugn/priconne-database/master/master_jp.db"]'
-          target: public/images
+          target: .
 
       - name: Generate .csv dump
         if: steps.new_version.outputs.exists == 'true'
